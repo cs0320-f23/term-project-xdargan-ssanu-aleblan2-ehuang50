@@ -1,0 +1,45 @@
+#Project Name: Server
+##Repo Link: https://github.com/cs0320-f23/server-brwangenheim-jerryquan-246
+Estimated hours = 20
+
+You can easily build and run the CSV program by using the typical command keys at the top of IntelliJ. 
+Running the server class will launch a local browser, where you then must input your file to be loaded 
+using : http://localhost:3232/loadcsv?filepath=? where your file path is taken from the repo root. You
+can also view your csv using the viewcsv command, and search using the searchcsv. Please make sure that 
+any inputs matches exactly with your item, as any deviations (including capitalization) will not result 
+in a match. For searchcsv, there are 5 parameters. searchValue is your key word, useColumn must be true or
+false, useHeaders must be your header name or No_Headers, and columnIndex must be the index number. You can
+search using either column headers (which must be the first row of your CSV file) or column index numbers: 
+if you are using a column header, enter it during the header prompt, and submit -1 when asked for the column
+index. If you are using a column index, please submit "No_Headers" when asked for a header, and the column index
+starting from 0 when asked for the index. Once entered, the search program will begin, and return your search 
+results. You can search as many times as you’d like without rebooting the server. However, loading a new CSV 
+requires running the server again. 
+
+**Design Choices:**
+
+One design choice we made was dependency injection, as viewHandler and searchHandler both take loadHandler 
+in their constructor. This allows for better modularity and hypothetically would allow for testing to be easier. 
+We also improved error handling from the CSV project; attempting to search with a header that doesn’t exist, 
+for example, won’t just return an error message, but also a list of available headers. We chose to print out 
+the error key along with messages and what the user inputted in order to make it more accessible formatting. 
+
+
+**Bugs:**
+
+We encountered a few bugs with connecting to the API, due to the usage of the WeatherAPI class in the livecode
+as reference for the API handling in the BroadbandHandler and CensusAPISource class.
+
+**Tests:**
+
+API Testing: The API Testing file contains JUnit tests for the BroadbandHandler class,
+which is responsible for handling API requests related to broadband data. These tests primarily focus
+on ensuring the correct behavior of the BroadbandHandler when interacting with a mocked data source
+for testing purposes. The tests include verifying that the API responds with the expected data when
+given specific input parameters and that the response is in the correct format. Additionally, the tests
+check for error handling by validating the response type in case of errors. This suite of tests ensures the
+reliability and functionality of the BroadbandHandler class when dealing with broadband data API requests.
+These tests collectively ensure that the CensusAPISource class can successfully retrieve and process census data
+from a real API datasource while handling various scenarios, including valid and invalid inputs.
+
+Our testing suites for our handlers are not available due to time constraints and difficulty passing in CSVs through loadHandler.
