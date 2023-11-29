@@ -38,8 +38,16 @@
       "last 1 safari version"
     ]
   },
+  "babel": {
+    "presets": [
+      "react-app"
+    ]
+  },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.3.5",
+    "@babel/core": "7.22.5",
+    "@babel/eslint-parser": "7.22.5",
+    "@babel/preset-env": "7.22.5"
   }
 }

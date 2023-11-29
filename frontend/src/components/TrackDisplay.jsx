@@ -12,7 +12,7 @@ const TrackDisplay = () => {
 
     return (
         <div className='flex flex-col overflow-scroll'>
-            <div className="overflow-scroll border-dksage border-2">
+            <div className="overflow-scroll bg-beige border-dksage border-2 w-[500px] h-[450px] ">
                 {songs.map((song, index) => (
                 <SongBox
                     key={index}
