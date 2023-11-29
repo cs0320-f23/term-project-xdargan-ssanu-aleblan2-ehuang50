@@ -37,7 +37,6 @@ const Stage = () => {
           </div>
           <div className='flex flex-col text-center h-1/2 w-1/3'>
             <TrackDisplay/>
-            <InputBar/>
           </div>
 
         </div>

@@ -18,6 +18,7 @@ module.exports = {
       backgroundColor: {
         'navy': '#3A5471',
         'dknavy': '#2B3D53',
+        'dksage': '#637155',
         'sage': '#AAAD8E',
         'beige': '#F0EDE2'
       },
