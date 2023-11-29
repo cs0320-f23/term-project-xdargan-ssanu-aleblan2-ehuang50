@@ -1,6 +1,5 @@
 import React from 'react'
 import Logo from './Logo' 
-import InputBar from './InputBar'
 import TrackDisplay from './TrackDisplay'
 import Stats from './Stats'
 import Graph from './Graph'
@@ -20,7 +19,7 @@ const Stage = () => {
           <Logo />
         </div>
         <div className='flex'>
-          <div className='flex w-1/4'>
+          <div className='flex w-1/4 h-2/3'>
             <Stats 
             att1="Popularity"
             att2="Energy"
@@ -35,12 +34,9 @@ const Stage = () => {
             att1="Energy"
             att2="Popularity"/>
           </div>
-          <div className='flex flex-col text-center h-1/2 w-1/3'>
+          <div className='flex flex-col text-center h-full w-2/3'>
             <TrackDisplay/>
           </div>
-
-        </div>
-        <div className='flex'>
         </div>
     </div>
   )
