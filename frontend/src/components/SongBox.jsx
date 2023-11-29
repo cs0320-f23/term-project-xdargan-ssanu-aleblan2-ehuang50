@@ -1,22 +1,26 @@
 import React from 'react'
 
-const SongBox = ({ url, title, artist }) => {
+const SongBox = ({ url, title, artist, color }) => {
+
   return (
-    <div className='flex items-center font-gotham border border-dksage bg-beige'>
-        <img src={require("../image/lizzymcalpine.jpeg")} className='w-1/5 p-2'/>
-        <div className='flex flex-col w-2/3 text-left justify-center text-dksage'>
-          <p className='flex text-2xl font-bold items-end'> 
+    <div className='flex font-gotham border border-dksage bg-beige'>
+      <div className='flex p-2'>
+        <img src={url} className='w-1/5'/>
+        <div className='flex flex-col text-dksage p-4 pt-6'>
+          <p className='flex text-2xl font-bold '> 
             {title}
           </p>
-          <p className='flex text-lg items-center'> 
+          <p className='flex font- text-lg'> 
             {artist}
           </p>
         </div>
-        <div>
-
+        <div className='flex items-center'>
+          <div class={`w-8 h-8 bg-${color} border-dksage border-2 rounded-full`}></div>
         </div>
+      </div>
     </div>
   )
+
 }
 
 export default SongBox

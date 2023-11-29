@@ -1,18 +1,25 @@
-import { React, Input, Button } from 'react'
-
+import React from 'react';
 
 const InputBar = () => {
+
   return (
-    <div className=''>
-        <Input>
-        
-        </Input>
-        <Input>
-
-        </Input>
-        <Button>
-
-        </Button>
+    <div className='flex text-gotham justify-around p-2'>
+        <form>
+          <label>
+            <input 
+            className='bg-beige text-dksage'
+            type='text' 
+            placeholder='Enter song title...'/>
+          </label>
+        </form>
+        <form>
+          <label>
+            <input 
+            className='bg-beige text-dksage'
+            type='text' 
+            placeholder='Enter artist...'/>
+          </label>
+        </form>
     </div>
   )
 }
