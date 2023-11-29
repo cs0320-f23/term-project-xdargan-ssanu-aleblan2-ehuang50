@@ -6,8 +6,8 @@ const Graph = ({ data, att1, att2 }) => {
 
   useEffect(() => {
     // Set size consts
-    const width = 300;
-    const height = 300;
+    const width = 400;
+    const height = 400;
     const margin = { top: 20, right: 20, bottom: 40, left: 40 };
 
     // Set range
@@ -35,6 +35,7 @@ const Graph = ({ data, att1, att2 }) => {
       .attr('cx', d => xScale(d.x))
       .attr('cy', d => yScale(d.y))
       .attr('r', 5)
+      .attr('id', (_, i) => `point-${i}`)
       .attr('fill', 'blue')
       .attr('stroke', '#637155');
 

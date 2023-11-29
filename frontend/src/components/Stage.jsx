@@ -19,7 +19,7 @@ const Stage = () => {
           <Logo />
         </div>
         <div className='flex'>
-          <div className='flex w-1/4 h-2/3'>
+          <div className='flex w-1/4 h-2/3 items-center'>
             <Stats 
             att1="Popularity"
             att2="Energy"
