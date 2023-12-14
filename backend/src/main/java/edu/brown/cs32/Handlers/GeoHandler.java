@@ -76,7 +76,7 @@ public class GeoHandler implements Route {
     }
 
     
-    public List<FeaturesRecord.Feature> filter(List<FeaturesRecord.Feature> feats, double minLong, double maxLong, double minLat, double maxLat) {
+    public static List<FeaturesRecord.Feature> filter(List<FeaturesRecord.Feature> feats, double minLong, double maxLong, double minLat, double maxLat) {
 
         List<FeaturesRecord.Feature> filteredFeats = new ArrayList<>();
 

@@ -1,11 +1,20 @@
 package edu.brown.cs32;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 import edu.brown.cs32.API.CensusAPISource;
 import edu.brown.cs32.Server.CSVDataWrapper;
 import edu.brown.cs32.Handlers.*;
+import edu.brown.cs32.Server.FeaturesRecord;
 import spark.Spark;
 import spark.utils.IOUtils;
+import edu.brown.cs32.Handlers.GeoHandler.*;
+
+
+import java.io.File;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import static spark.Spark.*;
@@ -130,6 +139,30 @@ public class GeoHandlerTest {
             HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
             connection.setRequestMethod("GET");
             return IOUtils.toString(connection.getInputStream());
+        }
+        @Test
+        public void IntegrationTest() throws IOException {
+            // testing when the target parameter is null
+            Moshi moshi = new Moshi.Builder().build();
+            JsonAdapter<FeaturesRecord.FeatureCollection> adapter = moshi.adapter(FeaturesRecord.FeatureCollection.class);
+            String geoString =
+                    new String(Files.readAllBytes((new File(filePath).toPath())));
+            FeaturesRecord.FeatureCollection featureCollection = adapter.fromJson(geoString);
+            assert featureCollection != null;
+            List<FeaturesRecord.Feature> sortedfeatured = GeoHandler.filter(featureCollection.features(), -86.74, -86.8, 33.45, 33.50);
+            assert(sortedfeatured.isEmpty());
+        }
+        public void IntegrationTest2() throws IOException {
+            // testing when the target parameter is null
+            Moshi moshi = new Moshi.Builder().build();
+            JsonAdapter<FeaturesRecord.FeatureCollection> adapter = moshi.adapter(FeaturesRecord.FeatureCollection.class);
+            String geoString =
+                    new String(Files.readAllBytes((new File(filePath).toPath())));
+            FeaturesRecord.FeatureCollection featureCollection = adapter.fromJson(geoString);
+            assert featureCollection != null;
+            List<FeaturesRecord.Feature> sortedfeatured = GeoHandler.filter(featureCollection.features(), 33.45, 33.50, -86.74, -86.8);
+            assert(sortedfeatured.size() == 1);
+            assert(sortedfeatured.get(0).properties().city().equals("Birmingham"));
         }
     }
 
