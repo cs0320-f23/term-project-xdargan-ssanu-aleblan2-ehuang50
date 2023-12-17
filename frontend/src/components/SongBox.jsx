@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 const shortenTitle = (title, maxChars) => {
   if (title.length <= maxChars) {
@@ -6,12 +6,25 @@ const shortenTitle = (title, maxChars) => {
   } else {
     return title.substr(0, maxChars - 3) + '...';
   }
+}
 
-  }
+const SongBox = ({ url, title, artist, index}) => {
 
-const SongBox = ({ url, title, artist, color }) => {
+  const [currentColor, setCurrentColor] = useState(0);
+
   const finalTitle = shortenTitle(title, 23);
   const finalArtist = shortenTitle(artist, 27);
+
+  const generateRandomHexCode = () => {
+    const randomColor = Math.floor(Math.random() * 16777215);
+    const hexCode = '#' + randomColor.toString(16).padStart(6, '0');
+    return hexCode;
+  };
+
+  const shuffleColor = () => {
+    const randomHexCode = generateRandomHexCode();
+    setCurrentColor(randomHexCode);
+  };
 
   return (
     <div className='flex font-gotham border border-dksage bg-beige p-4'>
@@ -26,7 +39,11 @@ const SongBox = ({ url, title, artist, color }) => {
           </p>
         </div>
         <div className='flex items-center w-full'>
-          <div class={`w-8 h-8 bg-${color} border-dksage border-2 ml-auto rounded-full`}></div>
+          <button
+              className={`w-8 h-8 border-dksage border-2 ml-auto rounded-full`}
+              style={{ backgroundColor: currentColor }}
+              onClick={shuffleColor}
+            ></button>
         </div>
       </div>
     </div>

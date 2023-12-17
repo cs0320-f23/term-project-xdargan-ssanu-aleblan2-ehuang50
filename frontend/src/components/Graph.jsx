@@ -3,8 +3,9 @@ import * as d3 from 'd3';
 
 const Graph = ({ data, att1, att2 }) => {
   const svgRef = useRef(null);
-
+  
   useEffect(() => {
+
     // Set size consts
     const width = 400;
     const height = 400;
