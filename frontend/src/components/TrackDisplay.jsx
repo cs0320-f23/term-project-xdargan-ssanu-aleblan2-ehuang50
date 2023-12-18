@@ -3,7 +3,7 @@ import SongBox from "./SongBox";
 import InputBar from "./InputBar";
 import { getAudioFeatures, getRecommendations } from "../api/spotifyApi";
 
-const TrackDisplay = ({ att1, att2, onDataUpdate, Data }) => {
+const TrackDisplay = ({ att1, att2, onDataUpdate, Data, onColorDataUpdate, onSongsUpdate}) => {
   const [songs, setSongs] = useState([]);
   const [alldata, setallData] = useState([]);
   const [recs, setrecs] = useState([]);
@@ -65,7 +65,12 @@ const TrackDisplay = ({ att1, att2, onDataUpdate, Data }) => {
   }
 
   const addSong = (newSong) => {
-    setSongs([...songs, newSong]);
+    const newSongList = [...songs, newSong];
+    setSongs(newSongList);
+    onSongsUpdate(newSongList); // Notify parent component
+
+    console.log("att1: " + att1);
+    console.log("att2: " + att2);
 
     getAudioFeatures(newSong.id)
       .then((audioFeatures) => {
@@ -129,6 +134,7 @@ const TrackDisplay = ({ att1, att2, onDataUpdate, Data }) => {
                 url={song.url}
                 title={song.title}
                 artist={song.artist_name}
+                onColorDataUpdate={onColorDataUpdate}
               />
             ))}
           </div>
@@ -139,6 +145,7 @@ const TrackDisplay = ({ att1, att2, onDataUpdate, Data }) => {
               url={song.album.images[0].url}
               title={song.name}
               artist={song.artists[0].name}
+              onColorDataUpdate={onColorDataUpdate}
             />
           ))
         )}
