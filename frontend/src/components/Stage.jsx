@@ -189,6 +189,7 @@ const Stage = () => {
             onSongsUpdate={handleSongsUpdate}
             att1={att1.toLowerCase()}
             att2={att2.toLowerCase()}
+            Data={data}
           />
         </div>
       </div>

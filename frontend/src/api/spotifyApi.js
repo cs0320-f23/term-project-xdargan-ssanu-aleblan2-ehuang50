@@ -26,9 +26,27 @@ export const getTrackInfo = (songName, artistName) => {
     });
 };
 
-export const getAudioFeatures = (trackId) => {
-  // Make the search request
-  return fetch(`https://api.spotify.com/v1/audio-features/${trackId}`, {
+// export const async getAudioFeatures = (trackId) => {
+//   // Make the search request
+//   return fetch(`https://api.spotify.com/v1/audio-features/${trackId}`, {
+//     method: "GET",
+//     headers: {
+//       Authorization: `Bearer ${ACCESS_TOKEN}`,
+//     },
+//   })
+//     .then((response) => response.json())
+//     .then((audioFeatures) => {
+//       // Return the audio features from the response
+//       return audioFeatures;
+//     })
+//     .catch((error) => {
+//       console.error("Error:", error);
+//       throw error;
+//     });
+// };
+
+export async function getAudioFeatures(trackId) {
+  return await fetch(`https://api.spotify.com/v1/audio-features/${trackId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${ACCESS_TOKEN}`,
@@ -43,4 +61,33 @@ export const getAudioFeatures = (trackId) => {
       console.error("Error:", error);
       throw error;
     });
-};
+}
+
+export const getRecommendations = (songlistdata) => {
+  const length = songlistdata.length > 5 ? 5 : songlistdata.length;
+  let seed_artists = "";
+  let seed_tracks = "";
+  for (let i = 0; i < length; i++) {
+    seed_artists += songlistdata[i].artist + ",";
+    seed_tracks += songlistdata[i].id + ",";
+  }
+  // Make the search request
+  return fetch(
+    `https://api.spotify.com/v1/recommendations?limit=30&seed_tracks=${seed_tracks}&seed_artists=${seed_artists}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+      },
+    }
+  )
+    .then((response) => response.json())
+    .then((recommendations) => {
+      // Return the recommendations from the response
+      return recommendations;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      throw error;
+    });
+}
