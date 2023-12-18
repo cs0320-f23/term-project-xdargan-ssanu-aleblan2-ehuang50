@@ -111,7 +111,7 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
       const centroid = calculateAverage(songdata);
       for (let i = 0; i < 2; i++) {
         console.log(recommendations.tracks[i]);
-        getAudioFeatures(recommendations.tracks[i]).then((audioFeatures) => {
+        getAudioFeatures(recommendations.tracks[i].id).then((audioFeatures) => {
           console.log("is this working>");
           console.log(audioFeatures);
           new_recommendations.push(
