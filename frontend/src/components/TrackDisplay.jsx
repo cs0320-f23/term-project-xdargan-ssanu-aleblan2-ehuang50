@@ -58,8 +58,8 @@ const TrackDisplay = ({ att1, att2, onDataUpdate, Data }) => {
       setSongs([]);
       onDataUpdate([]);
     } else {
-    setSongs(songs.slice(0, songs.length-2))
-    onDataUpdate(Data.slice(0, Data.length - 2));
+    setSongs(songs.slice(0, songs.length-1))
+    onDataUpdate(Data.slice(0, Data.length - 1));
     }
 
   }

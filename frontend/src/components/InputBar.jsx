@@ -6,7 +6,7 @@ const InputBar = ({
   recs,
   setrecs,
   removesong,
-  generateRecommendations,
+  generateRecommendations
 }) => {
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
