@@ -5,6 +5,12 @@
  * Overall, we thought of our target audience as B2C and B2B users, where the first three user stories are B2C and the last user
  * story is B2B. We used a variety of unit, integration, and random testing to test the key functionality of our project. 
  * We also checked our user interface and accessibility.
+ * 
+ * Covering:
+ * - Mocks in testing
+ * - Fuzz testing / random testing (TODO)
+ * - Integration testing (for backend API)
+ * 
  */
 
 import { test, expect } from "@playwright/test";
@@ -127,9 +133,19 @@ test("Submit empty input", async ({ page }) => {
 - Removing a song
 - Removing two songs
 - Trying to remove a song even when no (more) songs listed
-- 
+- Removing song after recommendations generated
  */
+
+/* Generating Recommendations
+*/
  
+/* Graph
+- Checking if data point corresponds accurately (placement)
+- Checking if data point changes color / visualizes accurately
+- Checking that data point removes when song is removed
+- Checking that Stats corresponds with Graph
+- Checking that all combinations of labels are available and reflected
+*/
 
 /* Funcationality so far:
 Loading Song, Song Displays in List, Corresponding Data Point (for plot) is created with song
