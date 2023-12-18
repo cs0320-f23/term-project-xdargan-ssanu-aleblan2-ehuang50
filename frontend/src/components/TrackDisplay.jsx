@@ -3,10 +3,9 @@ import SongBox from "./SongBox";
 import InputBar from "./InputBar";
 import { getAudioFeatures, getRecommendations } from "../api/spotifyApi";
 
-const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
+const TrackDisplay = ({ att1, att2, onDataUpdate, Data }) => {
   const [songs, setSongs] = useState([]);
   const [alldata, setallData] = useState([]);
-  const [data, setData] = useState([]);
   const [recs, setrecs] = useState([]);
 
   /* this calculates the average of the current songs that the user put in */
@@ -24,46 +23,46 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
   };
   /* this calculates the euclidian distance between the new song and the centroid (average of old songs) */
   const calculateED = (songdata, centroid) => {
-    let x = Math.pow(songdata[0].data.x - centroid[0], 2);
-    let y = Math.pow(songdata[1].data.x - centroid[0], 2);
+    let x = Math.pow(songdata.x - centroid[0], 2);
+    let y = Math.pow(songdata.y - centroid[1], 2);
     return Math.sqrt(x + y);
   };
   /* this returns the data for a given song -- function should only be used for recommended songs */
   const recommendedafr = async (newSong, centroid) => {
-    // return getAudioFeatures(newSong.id)
-    //   .then((audioFeatures) => {
-    //     const newDataPoint = {
-    //       x: audioFeatures[att1].toFixed(2) * 100,
-    //       y: audioFeatures[att2].toFixed(2) * 100,
-    //     };
-    //     const newSongData = {
-    //       id: newSong.id,
-    //       artist: newSong.artists[0].id,
-    //       url: newSong.album.images[0].url,
-    //       title: newSong.name,
-    //       artist_name: newSong.artists[0].name,
-    //       data: newDataPoint,
-    //       ED: calculateED(newDataPoint, centroid),
-    //     };
-    //     console.log("is this working>" + newSongData);
-    //     return newSongData;
-    //   })
-    //   .catch((error) => {
-    //     // Handle errors
-    //     console.error("Error fetching audio features:", error);
-    //   });;
-    const audio = await getAudioFeatures(newSong.id)
+    return await getAudioFeatures(newSong.id)
       .then((audioFeatures) => {
-        console.log("is this working>");
-        console.log(audioFeatures);
-        return audioFeatures;
+        const newDataPoint = {
+          x: audioFeatures[att1].toFixed(2) * 100,
+          y: audioFeatures[att2].toFixed(2) * 100,
+        };
+        const newSongData = {
+          id: newSong.id,
+          artist: newSong.artists[0].id,
+          url: newSong.album.images[0].url,
+          title: newSong.name,
+          artist_name: newSong.artists[0].name,
+          data: newDataPoint,
+          ED: calculateED(newDataPoint, centroid),
+        };
+        return newSongData;
       })
-      // .catch((error) => {
-      //   // Handle errors
-      //   console.error("Error fetching audio features:", error);
-      // });
-    return audio;
+      .catch((error) => {
+        // Handle errors
+        console.error("Error fetching audio features:", error);
+      });;
   };
+  const removesong = () => {
+    if(songs.length == 0){
+      alert("Please add a song before you remove one.")
+    } else if (songs.length == 1){
+      setSongs([]);
+      onDataUpdate([]);
+    } else {
+    setSongs(songs.slice(0, songs.length-2))
+    onDataUpdate(Data.slice(0, Data.length - 2));
+    }
+
+  }
 
   const addSong = (newSong) => {
     setSongs([...songs, newSong]);
@@ -82,10 +81,9 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
         };
 
         const newDataList = [...alldata, newSongData];
-        const newGraphData = [...data, newDataPoint];
+        const newGraphData = [...Data, newDataPoint];
 
         setallData(newDataList);
-        setData(newGraphData);
         onDataUpdate(newGraphData); // Notify parent component
 
         console.log("Audio Features:", audioFeatures);
@@ -98,33 +96,23 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
         console.error("Error fetching audio features:", error);
       });
   };
-  const generateRecommendations = (songdata) => {
-    if (songdata.length < 1) {
+  const generateRecommendations = async () => {
+    if (alldata.length < 1) {
       alert("Please put in at least one song to generate recommendations");
       return;
     }
-    getRecommendations(songdata).then((recommendations) => {
-      console.log(recommendations);
+    getRecommendations(alldata).then(async (recommendations) => {
       const lenrecommendations = recommendations.tracks.length;
-      console.log(lenrecommendations);
       let new_recommendations = [];
-      const centroid = calculateAverage(songdata);
-      for (let i = 0; i < 2; i++) {
-        console.log(recommendations.tracks[i]);
-        getAudioFeatures(recommendations.tracks[i].id).then((audioFeatures) => {
-          console.log("is this working>");
-          console.log(audioFeatures);
-          new_recommendations.push(
-            recommendedafr(recommendations.tracks[i], centroid)
-          );
-        });
-        
+      const centroid = calculateAverage(alldata);
+      for (let i = 0; i < lenrecommendations; i++) {
+        new_recommendations.push(
+          await recommendedafr(recommendations.tracks[i], centroid)
+        );
       }
-      console.log(new_recommendations);
       new_recommendations.sort((a, b) => a.ED - b.ED);
       const final_recommendations = new_recommendations.slice(0, 11);
       setrecs(final_recommendations);
-      console.log(final_recommendations);
       return;
     });
   };
@@ -138,9 +126,9 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
             {recs.map((song, index) => (
               <SongBox
                 index={index}
-                url={song.album.images[0].url}
-                title={song.name}
-                artist={song.artists[0].name}
+                url={song.url}
+                title={song.title}
+                artist={song.artist_name}
               />
             ))}
           </div>
@@ -155,13 +143,19 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
           ))
         )}
       </div>
-      <InputBar onAddSong={addSong} />
-      <button
-        style={{ border: "2px solid black" }}
+      <InputBar
+        onAddSong={addSong}
+        recs={recs}
+        setrecs={setrecs}
+        removesong={removesong}
+        generateRecommendations={generateRecommendations}
+      />
+      {/* <button
+        className="bg-amber-500 text-white p-1 rounded"
         onClick={() => generateRecommendations(alldata)}
       >
         Generate Recommendations
-      </button>
+      </button> */}
     </div>
   );
 };
