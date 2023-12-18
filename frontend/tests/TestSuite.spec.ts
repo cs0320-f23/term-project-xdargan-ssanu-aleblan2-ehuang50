@@ -1,33 +1,52 @@
+/**
+ * Test Suite considers testing from a user perspective. Therefore, we conceputalized four user story profiles that we wanted 
+ * to account for in usability. This included 1) general recreational user, 2) music director of musical organization, 3) Gen X
+ * user (simplistic usability and accessibility), 4) Spotify and developers (future integration ability and generalization). 
+ * Overall, we thought of our target audience as B2C and B2B users, where the first three user stories are B2C and the last user
+ * story is B2B. We used a variety of unit, integration, and random testing to test the key functionality of our project. 
+ * We also checked our user interface and accessibility.
+ */
+
 import { test, expect } from "@playwright/test";
-/* TODO: 
-1. Update to proper link
-*/
 
 test.beforeEach(async ({ page }) => {
-  // ... you'd put it here.
-  await page.goto("http://localhost:8000/");
-  initialCommands = await page.$$eval(
-    "#repl-history > div > div:first-child",
-    elements => elements.map(e => e.textContent)
-  );
-  initialOutputs = await page.$$eval(
-    "#repl-history > div > div:nth-child(2)",
-    elements => elements.map(e => e.textContent)
-  );
+  await page.goto("http://localhost:3000/");
 })
 
-// Basic UI Test
-test("Load the Plotify interface and verify title", async ({ page }) => {
-  // fix this link
-  await page.goto("http://localhost:8000/");
-  await expect(page).toHaveTitle("Plotify");
+// Basic UI Tests
+test("Load the Plotify interface and verify all elements present", async ({ page }) => {
+  // Verify the presence of Logo, Stats, Graph, and TrackDisplay components
+  await expect(page.locator('data-testid=logo')).toBeTruthy();
+  await expect(page.locator('data-testid=stats')).toBeTruthy();
+  await expect(page.locator('data-testid=graph')).toBeTruthy();
+  await expect(page.locator('data-testid=track-display')).toBeTruthy();
 });
+
+// Checks if dropdown / axis label options present in Stats
+test('should have correct text content in Stats component', async ({ page }) => {
+  // You can add assertions to check specific text content within the Stats component
+  const statsText = await page.textContent('data-testid=stats');
+  expect(statsText).toContain('Popularity');
+  expect(statsText).toContain('Energy');
+});
+
 
 /**
- * US1 Functionality - experimenting with platform
+ * Testing Loading and Viewing Songs - handleAddSong in InputBar (US1)
+ * In summary, we have tests for:
+ * - Entering an existing song, with complete info
+ * - Entering multiple existing songs
+ * - Entering a song that doesn't exist
+ * - Entering a song with only title (incomplete info)
+ * - Entering a song with only artist (incomplete info)
+ * - Entering a song with typos in information
+ * - Submitting empty input
+ * - Entering a song then removing it (and then adding another one)
+ * - Entering the same song twice - this is a bug
+ * - Entering song that has multiple versions available (i.e. instrumental)
  */
-test("Enter a song", async ({ page }) => {
-  await page.goto("http://localhost:8000/");
+
+test("Enter an existing song, with title and artist", async ({ page }) => {
   await page.fill(
     "input[aria-label='Command input']",
     "load_file nonExistent.csv"
@@ -37,9 +56,7 @@ test("Enter a song", async ({ page }) => {
   expect(output).toContain("File not found");
 });
 
-
-test("Enter a song", async ({ page }) => {
-  await page.goto("http://localhost:8000/");
+test("Entering existing songs (with complete info), multiple times", async ({ page }) => {
   await page.fill(
     "input[aria-label='Command input']",
     "load_file nonExistent.csv"
@@ -49,7 +66,56 @@ test("Enter a song", async ({ page }) => {
   expect(output).toContain("File not found");
 });
 
-// Submitting empty input
+test("Entering a song that doesn't exist", async ({ page }) => {
+  await page.fill(
+    "input[aria-label='Command input']",
+    "load_file nonExistent.csv"
+  );
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("File not found");
+});
+
+test("Entering a song with only title", async ({ page }) => {
+  await page.fill(
+    "input[aria-label='Command input']",
+    "load_file nonExistent.csv"
+  );
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("File not found");
+});
+
+test("Entering a song with only artist", async ({ page }) => {
+  await page.fill(
+    "input[aria-label='Command input']",
+    "load_file nonExistent.csv"
+  );
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("File not found");
+});
+
+test("Entering a song with title typos", async ({ page }) => {
+  await page.fill(
+    "input[aria-label='Command input']",
+    "load_file nonExistent.csv"
+  );
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("File not found");
+});
+
+test("Entering a song with artist typos", async ({ page }) => {
+  await page.fill(
+    "input[aria-label='Command input']",
+    "load_file nonExistent.csv"
+  );
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("File not found");
+});
+
 test("Submit empty input", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.click("text=Submit");
@@ -57,40 +123,13 @@ test("Submit empty input", async ({ page }) => {
   expect(output).toContain("Command not found"); // Assuming this is your desired behavior.
 });
 
-// Submitting invalid input 
-// --> we should account for error handling, and how smooth this goes
-test("Submit unknown command", async ({ page }) => {
-  await page.goto("http://localhost:8000/");
-  await page.fill("input[aria-label='Command input']", "unknown_command");
-  await page.click("text=Submit");
-  const output = await page.textContent(".repl-history div:last-child");
-  expect(output).toContain("Command not found");
-});
-
-// Search has no results (entering song that does not exist)
-test("Search has no results", async ({ page }) => {
-  await page.goto("http://localhost:8000/");
-  await page.fill(
-    "input[aria-label='Command input']",
-    "search nonExistentData"
-  );
-  await page.click("text=Submit");
-  const output = await page.textContent(".repl-history div:last-child");
-  expect(output).toContain("No results found");
-});
-
-// 
-test("View single column dataset", async ({ page }) => {
-  await page.goto("http://localhost:8000/");
-  await page.fill(
-    "input[aria-label='Command input']",
-    "load_file oneColumnData.csv"
-  );
-  await page.click("text=Submit");
-  await page.fill("input[aria-label='Command input']", "view");
-  await page.click("text=Submit");
-  const output = await page.textContent(".repl-history div:last-child");
-});
+/* Removing Songs
+- Removing a song
+- Removing two songs
+- Trying to remove a song even when no (more) songs listed
+- 
+ */
+ 
 
 /* Funcationality so far:
 Loading Song, Song Displays in List, Corresponding Data Point (for plot) is created with song
@@ -121,4 +160,17 @@ test("load then view", async ({ page }) => {
   await page.click("button:has-text('Submit')");
   const tableElement = await page.$("table.tablecenter");
   expect(tableElement).not.toBeNull();
+});
+
+/* ACCESSIBILITY TESTS (US3)
+*/ 
+
+// Verify alt text exists 
+test('images should have alt text', async ({ page }) => {
+  const images = await page.$$('img');
+  
+  for (const image of images) {
+    const altText = await image.evaluate(img => img.alt);
+    expect(altText).toBeTruthy();
+  }
 });

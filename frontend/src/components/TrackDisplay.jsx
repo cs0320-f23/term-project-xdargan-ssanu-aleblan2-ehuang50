@@ -28,5 +28,5 @@ const TrackDisplay = () => {
       );
     };
     
-    //export default TrackDisplay;
-    export { TrackDisplay }; // changed export so able to test
+    export default TrackDisplay;
+    //export { TrackDisplay }; // changed export so able to test
