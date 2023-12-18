@@ -3,12 +3,20 @@ import SongBox from "./SongBox";
 import InputBar from "./InputBar";
 import { getAudioFeatures } from "../api/spotifyApi";
 
-const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
+const TrackDisplay = ({
+  att1,
+  att2,
+  onDataUpdate,
+  onColorDataUpdate,
+  onSongsUpdate,
+}) => {
   const [songs, setSongs] = useState([]);
   const [data, setData] = useState([]);
 
   const addSong = (newSong) => {
-    setSongs([...songs, newSong]);
+    const newSongList = [...songs, newSong];
+    setSongs(newSongList);
+    onSongsUpdate(newSongList); // Notify parent component
 
     getAudioFeatures(newSong.id)
       .then((audioFeatures) => {
@@ -22,10 +30,10 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
         setData(newDataList);
         onDataUpdate(newDataList); // Notify parent component
 
-        console.log('Audio Features:', audioFeatures);
-        console.log('Att1:', audioFeatures[att1]);
-        console.log('Datapoint:', newDataPoint);
-        console.log('Updated Data:', newDataList);
+        console.log("Audio Features:", audioFeatures);
+        console.log("Att1:", audioFeatures[att1]);
+        console.log("Datapoint:", newDataPoint);
+        console.log("Updated Data:", newDataList);
       })
       .catch((error) => {
         // Handle errors
@@ -42,6 +50,7 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
             url={song.album.images[0].url}
             title={song.name}
             artist={song.artists[0].name}
+            onColorDataUpdate={onColorDataUpdate}
           />
         ))}
       </div>
