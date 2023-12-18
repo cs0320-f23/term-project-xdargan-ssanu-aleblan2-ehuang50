@@ -1,14 +1,44 @@
 import { test, expect } from "@playwright/test";
+/* TODO: 
+1. Update to proper link
+*/
 
-test("Load the REPL interface and verify title", async ({ page }) => {
+test.beforeEach(async ({ page }) => {
+  // ... you'd put it here.
   await page.goto("http://localhost:8000/");
-  await expect(page).toHaveTitle("Mock");
+  initialCommands = await page.$$eval(
+    "#repl-history > div > div:first-child",
+    elements => elements.map(e => e.textContent)
+  );
+  initialOutputs = await page.$$eval(
+    "#repl-history > div > div:nth-child(2)",
+    elements => elements.map(e => e.textContent)
+  );
+})
+
+// Basic UI Test
+test("Load the Plotify interface and verify title", async ({ page }) => {
+  // fix this link
+  await page.goto("http://localhost:8000/");
+  await expect(page).toHaveTitle("Plotify");
 });
 
 /**
- * Adapted from pw-default-example.spec.ts
+ * US1 Functionality - experimenting with platform
  */
-test("Load a non-existent file", async ({ page }) => {
+test("Enter a song", async ({ page }) => {
+  await page.goto("http://localhost:8000/");
+  await page.fill(
+    "input[aria-label='Command input']",
+    "load_file nonExistent.csv"
+  );
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("File not found");
+});
+
+
+test("Enter a song", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.fill(
     "input[aria-label='Command input']",
