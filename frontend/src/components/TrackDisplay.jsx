@@ -18,6 +18,9 @@ const TrackDisplay = ({
     setSongs(newSongList);
     onSongsUpdate(newSongList); // Notify parent component
 
+    console.log("att1: " + att1);
+    console.log("att2: " + att2);
+
     getAudioFeatures(newSong.id)
       .then((audioFeatures) => {
         const newDataPoint = {

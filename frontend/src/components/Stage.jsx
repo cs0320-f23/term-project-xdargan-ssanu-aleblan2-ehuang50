@@ -13,6 +13,10 @@ const Stage = () => {
 
   const handleDataUpdate = (newData) => {
     setData(newData);
+    setMean1(calculateMean(newData, true));
+    setMean2(calculateMean(newData, false));
+    setMedian1(calculateMedian(newData, true));
+    setMedian2(calculateMedian(newData, false));
     const newColorList = [...colorData, "#FFFFFF"];
     setColorData(newColorList);
   };
@@ -31,42 +35,42 @@ const Stage = () => {
   const [att2, setAtt2] = useState("Danceability");
 
   const updateDataWithAttribute = async (att, isX) => {
-    console.log("original: " + JSON.stringify(data));
-    const newDataList = [...data];
-    console.log(songs.length);
-    console.log(JSON.stringify(songs));
-    for (let i = 0; i < songs.length; i++) {
-      const currSong = songs[i];
-      await getAudioFeatures(currSong.id)
-        .then((audioFeatures) => {
-          const currData = newDataList[i];
-          console.log("old point: " + JSON.stringify(currData));
-          console.log("att: " + att);
-          console.log(
-            "audioFeatures[att]: " + JSON.stringify(audioFeatures[att])
-          );
-          let updatedCurrData = newDataList[i];
-          if (isX) {
-            updatedCurrData = {
-              ...currData,
-              x: audioFeatures[att].toFixed(2) * 100,
-            };
-          } else {
-            updatedCurrData = {
-              ...currData,
-              y: audioFeatures[att].toFixed(2) * 100,
-            };
-          }
-          console.log("new point: " + JSON.stringify(updatedCurrData));
-          newDataList[i] = updatedCurrData;
-        })
-        .catch((error) => {
-          // Handle errors
-          console.error("Error updating audio features:", error);
-        });
-    }
-    console.log("updated: " + JSON.stringify(newDataList));
+    let newDataList = [...data];
+    const updateDataSequentially = async () => {
+      for (let i = 0; i < songs.length; i++) {
+        const currSong = songs[i];
+        await getAudioFeatures(currSong.id)
+          .then((audioFeatures) => {
+            const currData = newDataList[i];
+            let updatedCurrData = newDataList[i];
+            if (isX) {
+              updatedCurrData = {
+                ...currData,
+                x: audioFeatures[att].toFixed(2) * 100,
+              };
+            } else {
+              updatedCurrData = {
+                ...currData,
+                y: audioFeatures[att].toFixed(2) * 100,
+              };
+            }
+            newDataList[i] = updatedCurrData;
+          })
+          .catch((error) => {
+            // Handle errors
+            console.error("Error updating audio features:", error);
+          });
+      }
+    };
+    await updateDataSequentially();
     setData(newDataList);
+    if (isX) {
+      setMean1(calculateMean(newDataList, isX));
+      setMedian1(calculateMedian(newDataList, isX));
+    } else {
+      setMean2(calculateMean(newDataList, isX));
+      setMedian2(calculateMedian(newDataList, isX));
+    }
   };
 
   const [mean1, setMean1] = useState("");
@@ -74,7 +78,54 @@ const Stage = () => {
   const [median1, setMedian1] = useState("");
   const [median2, setMedian2] = useState("");
 
-  const calculateMean = (att, isX) => {};
+  const calculateMean = (dataList, isX) => {
+    const total = parseFloat(dataList.length);
+    if (total == 0) {
+      return "";
+    }
+    let mean = 0;
+    for (let i = 0; i < dataList.length; i++) {
+      if (isX) {
+        mean += dataList[i].x;
+      } else {
+        mean += dataList[i].y;
+      }
+    }
+    return (mean / total).toFixed(2);
+  };
+
+  const calculateMedian = (dataList, isX) => {
+    const total = parseFloat(dataList.length);
+    if (total == 0) {
+      return "";
+    }
+    // Make a list of all the needed values
+    let numberList = [];
+    for (let i = 0; i < dataList.length; i++) {
+      if (isX) {
+        numberList = [...numberList, dataList[i].x];
+      } else {
+        numberList = [...numberList, dataList[i].y];
+      }
+    }
+
+    // Sort the numbers in ascending order
+    const sortedList = [...numberList].sort((a, b) => a - b);
+
+    // Calculate the median
+    if (sortedList.length % 2 === 0) {
+      // If the length is even, average the two middle values
+      const middleIndex1 = sortedList.length / 2 - 1;
+      const middleIndex2 = sortedList.length / 2;
+      const median = (sortedList[middleIndex1] + sortedList[middleIndex2]) / 2;
+
+      return median.toFixed(2); // rounded to two decimal places
+    } else {
+      // If the length is odd, return the middle value
+      const middleIndex = Math.floor(sortedList.length / 2);
+      return sortedList[middleIndex].toFixed(2); // rounded to two decimal places
+    }
+  };
 
   return (
     <div className="flex flex-col items-center bg-sage h-screen">
