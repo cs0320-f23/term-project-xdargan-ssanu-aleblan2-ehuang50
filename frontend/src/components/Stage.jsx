@@ -119,11 +119,11 @@ const Stage = () => {
       const middleIndex2 = sortedList.length / 2;
       const median = (sortedList[middleIndex1] + sortedList[middleIndex2]) / 2;
 
-      return median.toFixed(2); // rounded to two decimal places
+      return median.toFixed(1); // rounded to two decimal places
     } else {
       // If the length is odd, return the middle value
       const middleIndex = Math.floor(sortedList.length / 2);
-      return sortedList[middleIndex].toFixed(2); // rounded to two decimal places
+      return sortedList[middleIndex].toFixed(1); // rounded to two decimal places
     }
   };
 

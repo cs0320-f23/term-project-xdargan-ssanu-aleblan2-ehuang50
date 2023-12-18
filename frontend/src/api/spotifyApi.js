@@ -68,12 +68,18 @@ export const getRecommendations = (songlistdata) => {
   let seed_artists = "";
   let seed_tracks = "";
   for (let i = 0; i < length; i++) {
-    seed_artists += songlistdata[i].artist + ",";
-    seed_tracks += songlistdata[i].id + ",";
+    if(i-1 == length){
+    // seed_artists += songlistdata[i].artist;
+    seed_tracks += songlistdata[i].id;
+    } else {
+      // seed_artists += songlistdata[i].artist + ",";
+      seed_tracks += songlistdata[i].id + ",";
+    }
   }
   // Make the search request
   return fetch(
-    `https://api.spotify.com/v1/recommendations?limit=30&seed_tracks=${seed_tracks}&seed_artists=${seed_artists}`,
+    /* &seed_artists=${seed_artists} */
+    `https://api.spotify.com/v1/recommendations?limit=30&seed_tracks=${seed_tracks}`,
     {
       method: "GET",
       headers: {
