@@ -36,6 +36,7 @@ const Stage = () => {
           <div className='flex flex-col text-center h-full w-2/3'>
             <TrackDisplay
             onDataUpdate={handleDataUpdate}
+            Data ={data}
             att1="energy"
             att2="danceability"
             />
