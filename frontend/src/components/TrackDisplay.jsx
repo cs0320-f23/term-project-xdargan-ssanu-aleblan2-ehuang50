@@ -117,6 +117,11 @@ const TrackDisplay = ({ att1, att2, onDataUpdate, Data, onColorDataUpdate, onSon
       }
       new_recommendations.sort((a, b) => a.ED - b.ED);
       const final_recommendations = new_recommendations.slice(0, 11);
+      let newlist = [];
+      for(let i = 0; i < final_recommendations.length; i++){
+        newlist.push(final_recommendations[i].data)
+      }
+      onDataUpdate(newlist);
       setrecs(final_recommendations);
       return;
     });
