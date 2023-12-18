@@ -47,7 +47,7 @@ public class GeoSearchHandler implements Route {
         }
     }
 
-    public List<FeaturesRecord.Feature> search(List<FeaturesRecord.Feature> feats, String target) {
+    public static List<FeaturesRecord.Feature> search(List<FeaturesRecord.Feature> feats, String target) {
 
         List<FeaturesRecord.Feature> filteredFeats = new ArrayList<>();
 

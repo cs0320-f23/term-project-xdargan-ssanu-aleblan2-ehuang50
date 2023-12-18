@@ -9,10 +9,13 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
 import spark.Spark;
 import spark.utils.IOUtils;
+import edu.brown.cs32.Handlers.GeoSearchHandler.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -114,6 +117,20 @@ public class GeoSearchHandlerTest {
         HttpURLConnection connection = tryRequest("geosearch");
         String body = IOUtils.toString(connection.getInputStream());
         assert(body.contains("Error: must provide target search term for area descriptions"));
+
+    }
+    /** This method tests when the expected query parameters are not given */
+    @Test
+    public void IntegrationTest() throws IOException {
+        // testing when the target parameter is null
+        Moshi moshi = new Moshi.Builder().build();
+        JsonAdapter<FeaturesRecord.FeatureCollection> adapter = moshi.adapter(FeaturesRecord.FeatureCollection.class);
+        String geoString =
+                new String(Files.readAllBytes((new File(filePath).toPath())));
+        FeaturesRecord.FeatureCollection featureCollection = adapter.fromJson(geoString);
+        assert featureCollection != null;
+        List<FeaturesRecord.Feature> sortedfeatured = GeoSearchHandler.search(featureCollection.features(), "providence");
+        assert(sortedfeatured.get(0).properties().area_description_data().containsKey("providence"));
 
     }
 
