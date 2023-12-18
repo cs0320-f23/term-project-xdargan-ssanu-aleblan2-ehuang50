@@ -1,12 +1,30 @@
 import React, { useState } from "react";
 import SongBox from "./SongBox";
 import InputBar from "./InputBar";
-import { getAudioFeatures } from "../api/spotifyApi";
+import { getAudioFeatures, getRecommendations } from "../api/spotifyApi";
 
 const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
   const [songs, setSongs] = useState([]);
+  const [alldata, setallData] = useState([]);
   const [data, setData] = useState([]);
 
+  const audiofeaturereturn = (newSong) => {
+    getAudioFeatures(newSong)
+      .then((audioFeatures) => {
+        const newDataPoint = {
+          x: audioFeatures[att1].toFixed(2) * 100,
+          y: audioFeatures[att2].toFixed(2) * 100,
+        };
+
+        const newSongData = {
+          id: newSong.id,
+          artist: newSong.artists[0].id,
+          data: newDataPoint,
+        };
+        return newSongData;
+      })
+
+  }
   const addSong = (newSong) => {
     setSongs([...songs, newSong]);
 
@@ -17,10 +35,18 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
           y: audioFeatures[att2].toFixed(2) * 100,
         };
 
-        const newDataList = [...data, newDataPoint];
+        const newSongData = {
+          id: newSong.id,
+          artist: newSong.artists[0].id,
+          data: newDataPoint,
+        };
 
-        setData(newDataList);
-        onDataUpdate(newDataList); // Notify parent component
+        const newDataList = [...alldata, newSongData];
+        const newGraphData = [...data, newDataPoint];
+
+        setallData(newDataList);
+        setData(newGraphData);
+        onDataUpdate(newGraphData); // Notify parent component
 
         console.log('Audio Features:', audioFeatures);
         console.log('Att1:', audioFeatures[att1]);
@@ -31,6 +57,20 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
         // Handle errors
         console.error("Error fetching audio features:", error);
       });
+  };
+  const generateRecommendations = () => {
+    if (alldata.length < 1) {
+      alert("Please put in at least one song to generate recommendations")
+      return;
+    }
+    getRecommendations(alldata).then((recommendations) => {
+      const lenrecommendations = recommendations.length;
+      let new_reccomendations = [];
+      for (let i=0; i<lenrecommendations; i++) {
+        new_reccomendations.push(recommendations[i].id);
+      }
+      console.log(recommendations);
+    });
   };
 
   return (
@@ -46,8 +86,10 @@ const TrackDisplay = ({ att1, att2, onDataUpdate }) => {
         ))}
       </div>
       <InputBar onAddSong={addSong} />
+      <button style={{border: "2px solid black"}} onClick={generateRecommendations}>Generate Recommendations</button>
     </div>
   );
 };
 
 export default TrackDisplay;
+
