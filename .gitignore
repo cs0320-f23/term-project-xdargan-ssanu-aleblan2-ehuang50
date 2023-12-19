@@ -1,4 +1,4 @@
+src/api/private
 frontend/src/api/private
 node_modules
-frontend/build
 .vercel

@@ -1,1 +1,1 @@
-export const ACCESS_TOKEN = "insert access key here";
+export const ACCESS_TOKEN = "insert access key here"; // access key for SpotifyAPI

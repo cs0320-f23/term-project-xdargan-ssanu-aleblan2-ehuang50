@@ -1,6 +1,17 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
+/**
+ * Graph is a React component that renders a scatter plot using D3.js.
+ *
+ * @component
+ * @param {Array<Object>} data - An array of objects representing data points with 'x' and 'y' properties to be plotted.
+ * @param {string} att1 - The attribute label for the x-axis that the data is based on.
+ * @param {string} att2 - The attribute label for the y-axis that the data is based on.
+ * @param {Array<string>} colorData - An array of colors corresponding to each data point's plotted color.
+ * @returns {JSX.Element} JSX element representing the scatter plot.
+ *
+ */
 const Graph = ({ data, att1, att2, colorData }) => {
   const svgRef = useRef(null);
 

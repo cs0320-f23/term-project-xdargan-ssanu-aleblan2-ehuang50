@@ -1,20 +1,37 @@
 import React, { useState } from "react";
 import { getTrackInfo } from "../api/spotifyApi";
 
+/**
+ * InputBar is a React component that provides interactive text boxes and buttons for adding, removing songs, and generating recommendations.
+ *
+ * @component
+ * @param {Function} onAddSong - Callback function to add a song.
+ * @param {Array<Object>} recs - An array of recommendations.
+ * @param {Function} setRecs - Function to set the recommendations.
+ * @param {Function} removeSong - Callback function to remove a song.
+ * @param {Function} generateRecommendations - Callback function to generate recommendations.
+ * @returns {JSX.Element} JSX element representing the input form.
+ *
+ */
 const InputBar = ({
   onAddSong,
   recs,
-  setrecs,
-  removesong,
-  generateRecommendations
+  setRecs,
+  removeSong,
+  generateRecommendations,
 }) => {
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
 
+  /**
+   * Handles the submission of when a song is added.
+   *
+   * @param {Object} e - The form submission event.
+   */
   const handleAddSong = (e) => {
     e.preventDefault();
     if (recs.length != 0) {
-      setrecs([]);
+      setRecs([]);
     }
     if (title && artist) {
       getTrackInfo(title, artist)
@@ -33,11 +50,15 @@ const InputBar = ({
       setArtist("");
     }
   };
+
+  /**
+   * Handles the removal of a song.
+   */
   const handleRemoveSong = () => {
     if (recs.length != 0) {
-      setrecs([]);
+      setRecs([]);
     }
-    removesong();
+    removeSong();
   };
 
   return (

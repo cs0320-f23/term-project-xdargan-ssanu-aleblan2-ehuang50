@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 
+/**
+ * Shortens the given title to a specified maximum number of characters.
+ *
+ * @param {string} title - The original title.
+ * @param {number} maxChars - The maximum number of characters for the shortened title.
+ * @returns {string} The shortened title.
+ */
 const shortenTitle = (title, maxChars) => {
   if (title.length <= maxChars) {
     return title;
@@ -8,18 +15,38 @@ const shortenTitle = (title, maxChars) => {
   }
 };
 
+/**
+ * SongBox is a React component that visually displays information about a song.
+ *
+ * @component
+ * @param {string} url - The URL of the song image.
+ * @param {string} title - The title of the song.
+ * @param {string} artist - The artist of the song.
+ * @param {number} index - The index of the song in the list.
+ * @param {Function} onColorDataUpdate - Callback function to update color data for the song.
+ * @returns {JSX.Element} JSX element representing the song box.
+ *
+ */
 const SongBox = ({ url, title, artist, index, onColorDataUpdate }) => {
   const [currentColor, setCurrentColor] = useState("#FFFFFF");
 
   const finalTitle = shortenTitle(title, 23);
   const finalArtist = shortenTitle(artist, 27);
 
+  /**
+   * Generates a random hex code.
+   *
+   * @returns {string} The generated hex code.
+   */
   const generateRandomHexCode = () => {
     const randomColor = Math.floor(Math.random() * 16777215);
     const hexCode = "#" + randomColor.toString(16).padStart(6, "0");
     return hexCode;
   };
 
+  /**
+   * Shuffles the color for the song box and updates color data for this data point at index.
+   */
   const shuffleColor = () => {
     const randomHexCode = generateRandomHexCode();
     setCurrentColor(randomHexCode);
