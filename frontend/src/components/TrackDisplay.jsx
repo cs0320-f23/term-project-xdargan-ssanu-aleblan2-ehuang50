@@ -3,6 +3,20 @@ import SongBox from "./SongBox";
 import InputBar from "./InputBar";
 import { getAudioFeatures, getRecommendations } from "../api/spotifyApi";
 
+/**
+ * TrackDisplay is a React component that manages the display of songs and recommendations.
+ *
+ * @component
+ * @param {string} att1 - The label for the first attribute used in the graph.
+ * @param {string} att2 - The label for the second attribute used in the graph.
+ * @param {Function} onDataUpdate - A function to update the data used in the graph.
+ * @param {Array} Data - The data used in the graph.
+ * @param {Function} onColorDataUpdate - A function to update the color data used in the graph.
+ * @param {Function} onSongsUpdate - A function to update the list of songs.
+ * @param {Function} onResetSongs - A function to reset the colors of the songs in the graph.
+ * @returns {JSX.Element} JSX element representing the track display.
+ *
+ */
 const TrackDisplay = ({
   att1,
   att2,
@@ -14,9 +28,15 @@ const TrackDisplay = ({
 }) => {
   const [songs, setSongs] = useState([]);
   const [alldata, setallData] = useState([]);
-  const [recs, setrecs] = useState([]);
+  const [recs, setRecs] = useState([]);
 
-  /* this calculates the average of the current songs that the user put in */
+  /**
+   * Calculate the average of the current songs in the list.
+   *
+   * @function
+   * @param {Array} songlistdata - The list of songs to calculate the average.
+   * @returns {Array} An array containing the average values for x and y.
+   */
   const calculateAverage = (songlistdata) => {
     const length = songlistdata.length;
     let sum1 = 0;
@@ -29,13 +49,30 @@ const TrackDisplay = ({
     const avgy = sum2 / length;
     return [avgx, avgy];
   };
-  /* this calculates the euclidian distance between the new song and the centroid (average of old songs) */
+
+  /**
+   * Calculate the Euclidean distance between the new song and the centroid (average of old songs).
+   *
+   * @function
+   * @param {Object} songdata - The data of the new song.
+   * @param {Array} centroid - The centroid (average) of the old songs.
+   * @returns {number} The Euclidean distance between the new song and the centroid.
+   */
   const calculateED = (songdata, centroid) => {
     let x = Math.pow(songdata.x - centroid[0], 2);
     let y = Math.pow(songdata.y - centroid[1], 2);
     return Math.sqrt(x + y);
   };
-  /* this returns the data for a given song -- function should only be used for recommended songs */
+
+  /**
+   * Fetch audio features for a recommended song and return its data.
+   *
+   * @async
+   * @function
+   * @param {Object} newSong - The recommended song object.
+   * @param {Array} centroid - The centroid (average) of the old songs.
+   * @returns {Promise<Object>} A promise that resolves to the data of the recommended song.
+   */
   const recommendedafr = async (newSong, centroid) => {
     return await getAudioFeatures(newSong.id)
       .then((audioFeatures) => {
@@ -59,7 +96,13 @@ const TrackDisplay = ({
         console.error("Error fetching audio features:", error);
       });
   };
-  const removesong = () => {
+
+  /**
+   * Remove the last added song from the list and update the data in the graph.
+   *
+   * @function
+   */
+  const removeSong = () => {
     if (songs.length == 0) {
       alert("Please add a song before you remove one.");
     } else if (songs.length == 1) {
@@ -72,6 +115,12 @@ const TrackDisplay = ({
     }
   };
 
+  /**
+   * Add a new song to the list, fetch its audio features, and update the data in the graph.
+   *
+   * @function
+   * @param {Object} newSong - The new song to be added.
+   */
   const addSong = (newSong) => {
     const newSongList = [...songs, newSong];
     setSongs(newSongList);
@@ -109,6 +158,13 @@ const TrackDisplay = ({
         console.error("Error fetching audio features:", error);
       });
   };
+
+  /**
+   * Generate song recommendations based on the current list of songs and update the data in the graph.
+   *
+   * @async
+   * @function
+   */
   const generateRecommendations = async () => {
     if (alldata.length < 1) {
       alert("Please put in at least one song to generate recommendations");
@@ -131,7 +187,7 @@ const TrackDisplay = ({
       }
       onDataUpdate(newlist);
       onResetSongs(newlist.length);
-      setrecs(final_recommendations);
+      setRecs(final_recommendations);
       return;
     });
   };
@@ -167,8 +223,8 @@ const TrackDisplay = ({
       <InputBar
         onAddSong={addSong}
         recs={recs}
-        setrecs={setrecs}
-        removesong={removesong}
+        setRecs={setRecs}
+        removeSong={removeSong}
         generateRecommendations={generateRecommendations}
       />
       {/* <button

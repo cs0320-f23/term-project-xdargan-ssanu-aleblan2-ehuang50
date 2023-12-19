@@ -6,11 +6,23 @@ import Graph from "./Graph";
 import DropdownMenu from "./DropdownMenu";
 import { getAudioFeatures } from "../api/spotifyApi";
 
+/**
+ * Stage is a React component that represents the main front-end stage of the application.
+ *
+ * @component
+ * @returns {JSX.Element} JSX element representing the main stage.
+ *
+ */
 const Stage = () => {
   const [data, setData] = useState([]);
   const [colorData, setColorData] = useState([]);
   const [songs, setSongs] = useState([]);
 
+  /**
+   * Handles the update of data in the component.
+   *
+   * @param {Array} newData - The new data to be stored in the stage.
+   */
   const handleDataUpdate = (newData) => {
     setData(newData);
     setMean1(calculateMean(newData, true));
@@ -21,16 +33,32 @@ const Stage = () => {
     setColorData(newColorList);
   };
 
+  /**
+   * Handles the update of color data for a specific song.
+   *
+   * @param {number} index - The index of the song in the list.
+   * @param {string} color - The new color data for the song.
+   */
   const handleColorDataUpdate = (index, color) => {
     const newColorList = [...colorData];
     newColorList[index] = color;
     setColorData(newColorList);
   };
 
+  /**
+   * Handles the update of the songs in the component.
+   *
+   * @param {Array} newSongs - The new songs to set in the component.
+   */
   const handleSongsUpdate = (newSongs) => {
     setSongs(newSongs);
   };
 
+  /**
+   * Resets the colors for all songs.
+   *
+   * @param {number} size - The number of songs.
+   */
   const resetColors = (size) => {
     let newColors = [];
     for (let i = 0; i < size; i++) {
@@ -42,6 +70,12 @@ const Stage = () => {
   const [att1, setAtt1] = useState("Energy");
   const [att2, setAtt2] = useState("Danceability");
 
+  /**
+   * Updates the data with a selected attribute changed.
+   *
+   * @param {string} att - The selected attribute.
+   * @param {boolean} isX - Whether the attribute is for the X-axis.
+   */
   const updateDataWithAttribute = async (att, isX) => {
     let newDataList = [...data];
     const updateDataSequentially = async () => {
@@ -86,6 +120,13 @@ const Stage = () => {
   const [median1, setMedian1] = useState("");
   const [median2, setMedian2] = useState("");
 
+  /**
+   * Calculates the mean of a specific data list and attribute.
+   *
+   * @param {Array} dataList - The data list.
+   * @param {boolean} isX - Whether the attribute is for the X-axis.
+   * @returns {string} The calculated mean.
+   */
   const calculateMean = (dataList, isX) => {
     const total = parseFloat(dataList.length);
     if (total == 0) {
@@ -102,6 +143,13 @@ const Stage = () => {
     return (mean / total).toFixed(2);
   };
 
+  /**
+   * Calculates the median of a specific data list and attribute.
+   *
+   * @param {Array} dataList - The data list.
+   * @param {boolean} isX - Whether the attribute is for the X-axis.
+   * @returns {string} The calculated median.
+   */
   const calculateMedian = (dataList, isX) => {
     const total = parseFloat(dataList.length);
     if (total == 0) {

@@ -1,5 +1,13 @@
 import { ACCESS_TOKEN } from "./private/api";
 
+/**
+ * Fetches information about a searched track from the Spotify API.
+ * @param {string} songName - The searched name of the song.
+ * @param {string} artistName - The searched name of the artist.
+ * @returns {Promise<Object>} A Promise that resolves to an object containing data about the track.
+ *
+ * @throws {Error} Throws an error if the fetch request fails or if the response is not in JSON format.
+ */
 export const getTrackInfo = (songName, artistName) => {
   // Encode the song and artist names for a URL
   const encodedSongName = encodeURIComponent(songName);
@@ -26,6 +34,13 @@ export const getTrackInfo = (songName, artistName) => {
     });
 };
 
+/**
+ * Fetches data on the audio features about a given track from the Spotify API.
+ * @param {string} trackId - The id of the song.
+ * @returns {Promise<Object>} A Promise that resolves to an object containing the audio features of the track.
+ *
+ * @throws {Error} Throws an error if the fetch request fails or if the response is not in JSON format.
+ */
 export async function getAudioFeatures(trackId) {
   return await fetch(`https://api.spotify.com/v1/audio-features/${trackId}`, {
     method: "GET",
@@ -44,6 +59,12 @@ export async function getAudioFeatures(trackId) {
     });
 }
 
+/**
+ * Fetches audio features about a searched track from the Spotify API.
+ * @param {string} songName - The searched name of the song.
+ * @param {string} artistName - The searched name of the artist.
+ * @returns {Promise<Object>} A Promise that resolves to an object containing the audio features of the track.
+ */
 export const getAudioFeaturesFromSearch = (songName, artistName) => {
   // Encode the song and artist names for a URL
   const encodedSongName = encodeURIComponent(songName);
@@ -87,6 +108,14 @@ export const getAudioFeaturesFromSearch = (songName, artistName) => {
     });
 };
 
+/**
+ * Fetches track recommendations from the Spotify API based on a list of seed tracks.
+ *
+ * @param {Array} songlistdata - An array of objects representing songs, each with an 'id' property.
+ * @returns {Promise<Object>} A Promise that resolves to an object containing track recommendations.
+ *
+ * @throws {Error} Throws an error if the fetch request fails or if the response is not in JSON format.
+ */
 export const getRecommendations = (songlistdata) => {
   const length = songlistdata.length > 5 ? 5 : songlistdata.length;
   let seed_artists = "";
