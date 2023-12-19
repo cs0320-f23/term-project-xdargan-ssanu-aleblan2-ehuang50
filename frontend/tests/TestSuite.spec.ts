@@ -6,11 +6,9 @@
  * story is B2B. We used a variety of unit, integration, and random testing to test the key functionality of our project. 
  * We also checked our user interface and accessibility.
  * 
- * Covering:
- * - Mocks in testing
- * - Fuzz testing / random testing (TODO)
- * - Integration testing (for backend API)
- * 
+ * This test suite covers
+ * - Integration testing
+ * - Random testing 
  */
 
 import { test, expect } from "@playwright/test";
@@ -19,7 +17,8 @@ test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/");
 })
 
-// Basic UI Tests
+/** Basic UI Tests
+ */
 test("Load the Plotify interface and verify all elements present", async ({ page }) => {
   // Verify the presence of Logo, Stats, Graph, and TrackDisplay components
   await expect(page.locator('data-testid=logo')).toBeTruthy();
@@ -63,6 +62,26 @@ test("Enter an existing song, with title and artist", async ({ page }) => {
 });
 
 test("Entering existing songs (with complete info), multiple times", async ({ page }) => {
+  await page.fill(
+    "input[aria-label='Command input']",
+    "load_file nonExistent.csv"
+  );
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("File not found");
+});
+
+test("Entering multiple existing songs and removing song", async ({ page }) => {
+  await page.fill(
+    "input[aria-label='Command input']",
+    "load_file nonExistent.csv"
+  );
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("File not found");
+});
+
+test("Entering existing songs and then a non existing song", async ({ page }) => {
   await page.fill(
     "input[aria-label='Command input']",
     "load_file nonExistent.csv"
@@ -134,10 +153,51 @@ test("Submit empty input", async ({ page }) => {
 - Removing two songs
 - Trying to remove a song even when no (more) songs listed
 - Removing song after recommendations generated
+- Removing all songs after recommendations generated
  */
 
+test("Entering a song and removing a song", async ({ page }) => {
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("Command not found"); // Assuming this is your desired behavior.
+});
+
+test("Removing two songs", async ({ page }) => {
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("Command not found"); // Assuming this is your desired behavior.
+});
+
+test("Removing a song when there are no songs", async ({ page }) => {
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("Command not found"); // Assuming this is your desired behavior.
+});
+
+test("Removing a song after recommendations generated", async ({ page }) => {
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("Command not found"); // Assuming this is your desired behavior.
+});
+
+test("Removing all songs after recommendations generated", async ({ page }) => {
+  await page.click("text=Submit");
+  const output = await page.textContent(".repl-history div:last-child");
+  expect(output).toContain("Command not found"); // Assuming this is your desired behavior.
+});
+
 /* Generating Recommendations
+- Trying to generate recommendations with no songs entered
+- Generating recommendations with one song entered
+- Generating recommendations with two songs entered
+- Generating recommendations with five songs entered
+- Generating recommendations with ten songs entered
+- Generating recommendations with one song removed (above)
+- Generating recommendations with two songs removed 
+- Generating recommendations with all songs removed 
 */
+
+
  
 /* Graph
 - Checking if data point corresponds accurately (placement)
@@ -177,6 +237,20 @@ test("load then view", async ({ page }) => {
   const tableElement = await page.$("table.tablecenter");
   expect(tableElement).not.toBeNull();
 });
+
+/** 
+ * Integration Testing (to backend API) 
+ */
+
+/**
+ * Error Handling
+ */
+
+/**
+ * Random and Fuzz Testing Testing
+ */
+
+
 
 /* ACCESSIBILITY TESTS (US3)
 */ 

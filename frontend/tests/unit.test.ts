@@ -23,19 +23,19 @@ const audioFeaturesMock = { feature1: 0.5, feature2: 0.7 };
 // Testing handleAddSong
 console.log('Testing handleAddSong');
 
-// Test 1: Clearing Recommendations
+// Clearing Recommendations
 console.log('Test 1: Clearing Recommendations');
 let recs = ['some', 'data'];
 handleAddSong({ preventDefault: () => {} }, recs, /* other required params */);
 console.log('Expect setrecs to be called with []:', setrecs.mock.calls);
 
-// Test 2: Adding a Song with Valid Data
+// Adding a Song with Valid Data
 console.log('Test 2: Adding a Song with Valid Data');
 getTrackInfo.mockResolvedValue(trackInfoMock);
 await handleAddSong({ preventDefault: () => {} }, [], 'title', 'artist');
 console.log('Expect onAddSong, setTitle, setArtist to be called');
 
-// Test 3: Error Handling in getTrackInfo
+// Error Handling in getTrackInfo
 console.log('Test 3: Error Handling in getTrackInfo');
 getTrackInfo.mockRejectedValue(new Error('Error'));
 await handleAddSong({ preventDefault: () => {} }, [], 'title', 'artist');
@@ -44,20 +44,21 @@ console.log('Expect error handling logic for getTrackInfo');
 // Testing addSong
 console.log('Testing addSong');
 
-// Test 1: Update Songs List
+// Update Songs List
 console.log('Test 1: Update Songs List');
 const newSong = { id: '1', name: 'New Song' };
 const songs = [{ id: '2', name: 'Old Song' }];
+// Changed from addSong to onAddSong
 addSong(newSong, songs, /* other required params */);
 console.log('Expect setSongs and onSongsUpdate to be called with new list');
 
-// Test 2: Audio Features Handling
+// Audio Features Handling
 console.log('Test 2: Audio Features Handling');
 getAudioFeatures.mockResolvedValue(audioFeaturesMock);
 await addSong(newSong, songs, /* other required params */);
 console.log('Expect audio features to be processed');
 
-// Test 3: Error Handling in getAudioFeatures
+// Error Handling in getAudioFeatures
 console.log('Test 3: Error Handling in getAudioFeatures');
 getAudioFeatures.mockRejectedValue(new Error('Error'));
 await addSong(newSong, songs, /* other required params */);
