@@ -31,6 +31,14 @@ const Stage = () => {
     setSongs(newSongs);
   };
 
+  const resetColors = (size) => {
+    let newColors = [];
+    for (let i = 0; i < size; i++) {
+      newColors = [...newColors, "#FFFFFF"];
+    }
+    setColorData(newColors);
+  };
+
   const [att1, setAtt1] = useState("Energy");
   const [att2, setAtt2] = useState("Danceability");
 
@@ -187,6 +195,7 @@ const Stage = () => {
             onDataUpdate={handleDataUpdate}
             onColorDataUpdate={handleColorDataUpdate}
             onSongsUpdate={handleSongsUpdate}
+            onResetSongs={resetColors}
             att1={att1.toLowerCase()}
             att2={att2.toLowerCase()}
             Data={data}
@@ -198,4 +207,3 @@ const Stage = () => {
 };
 
 export default Stage;
-

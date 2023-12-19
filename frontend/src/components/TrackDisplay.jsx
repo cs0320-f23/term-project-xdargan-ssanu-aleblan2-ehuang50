@@ -3,7 +3,15 @@ import SongBox from "./SongBox";
 import InputBar from "./InputBar";
 import { getAudioFeatures, getRecommendations } from "../api/spotifyApi";
 
-const TrackDisplay = ({ att1, att2, onDataUpdate, Data, onColorDataUpdate, onSongsUpdate}) => {
+const TrackDisplay = ({
+  att1,
+  att2,
+  onDataUpdate,
+  Data,
+  onColorDataUpdate,
+  onSongsUpdate,
+  onResetSongs,
+}) => {
   const [songs, setSongs] = useState([]);
   const [alldata, setallData] = useState([]);
   const [recs, setrecs] = useState([]);
@@ -49,20 +57,20 @@ const TrackDisplay = ({ att1, att2, onDataUpdate, Data, onColorDataUpdate, onSon
       .catch((error) => {
         // Handle errors
         console.error("Error fetching audio features:", error);
-      });;
+      });
   };
   const removesong = () => {
-    if(songs.length == 0){
-      alert("Please add a song before you remove one.")
-    } else if (songs.length == 1){
+    if (songs.length == 0) {
+      alert("Please add a song before you remove one.");
+    } else if (songs.length == 1) {
       setSongs([]);
       onDataUpdate([]);
+      onResetSongs(0);
     } else {
-    setSongs(songs.slice(0, songs.length-1))
-    onDataUpdate(Data.slice(0, Data.length - 1));
+      setSongs(songs.slice(0, songs.length - 1));
+      onDataUpdate(Data.slice(0, Data.length - 1));
     }
-
-  }
+  };
 
   const addSong = (newSong) => {
     const newSongList = [...songs, newSong];
@@ -118,10 +126,11 @@ const TrackDisplay = ({ att1, att2, onDataUpdate, Data, onColorDataUpdate, onSon
       new_recommendations.sort((a, b) => a.ED - b.ED);
       const final_recommendations = new_recommendations.slice(0, 11);
       let newlist = [];
-      for(let i = 0; i < final_recommendations.length; i++){
-        newlist.push(final_recommendations[i].data)
+      for (let i = 0; i < final_recommendations.length; i++) {
+        newlist.push(final_recommendations[i].data);
       }
       onDataUpdate(newlist);
+      onResetSongs(newlist.length);
       setrecs(final_recommendations);
       return;
     });
