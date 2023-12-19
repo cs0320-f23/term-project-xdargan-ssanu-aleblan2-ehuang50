@@ -1,5 +1,5 @@
 /**
- * Unit Testing
+ * Unit Testing - Unit testing covered functions
  */
 // Import functions
 import React, { useState } from "react";
@@ -26,19 +26,19 @@ console.log('Testing handleAddSong');
 // Clearing Recommendations
 console.log('Test 1: Clearing Recommendations');
 let recs = ['some', 'data'];
-handleAddSong({ preventDefault: () => {} }, recs, /* other required params */);
+handleAddSong({ preventDefault: () => {} }, recs);
 console.log('Expect setrecs to be called with []:', setrecs.mock.calls);
 
 // Adding a Song with Valid Data
 console.log('Test 2: Adding a Song with Valid Data');
 getTrackInfo.mockResolvedValue(trackInfoMock);
-await handleAddSong({ preventDefault: () => {} }, [], 'title', 'artist');
+await handleAddSong({ preventDefault: () => {} }, [], 'Sucker', 'Jonas Brothers');
 console.log('Expect onAddSong, setTitle, setArtist to be called');
 
 // Error Handling in getTrackInfo
 console.log('Test 3: Error Handling in getTrackInfo');
 getTrackInfo.mockRejectedValue(new Error('Error'));
-await handleAddSong({ preventDefault: () => {} }, [], 'title', 'artist');
+await handleAddSong({ preventDefault: () => {} }, [], 'invisible string', 'Taylor Swift');
 console.log('Expect error handling logic for getTrackInfo');
 
 // Testing addSong
